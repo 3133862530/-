@@ -1,5 +1,6 @@
 #include"class.h"
 
+
 // 默认开业时间为8点，营业时长为480分
 int OpeningHour = 8;
 int OpeningMintue = 0;
@@ -115,4 +116,59 @@ void queue::dequeue(client& c) {
 
 queue::~queue() {
 	init();
+}
+
+void queue::writeToFile(const string& filename) 
+{
+	std::ofstream outFile(filename, std::ios::out);
+	if (!outFile) {
+		cerr << "无法打开文件进行写入！" << endl;
+		return;
+	}
+	node* current = Head;
+	while (current != nullptr) {
+		outFile << current->C.Name << '\n';
+		for (int i = 0; i < 11; ++i) {
+			outFile << current->C.Phone[i];
+		}
+		outFile << '\n';
+		outFile << current->C.Kind << '\n';
+		outFile << current->C.Id << '\n';
+		outFile << current->C.Arrtime << '\n';
+		outFile << current->C.Reqtime << '\n';
+		current = current->Next;
+	}
+	outFile.close();
+}
+
+void queue::readFromFile(const string& filename) {
+	std::ifstream inFile(filename, std::ios::in);
+	if (!inFile) {
+		cerr << "无法打开文件进行读取！" << endl;
+		return;
+	}
+	init(); // 清空现有队列
+	while (!inFile.eof()) {
+		client tempClient;
+		string name;
+		string phoneStr;
+		int phone[11];
+		bool kind = false;
+		string id;
+		int arrtime, reqtime;
+
+		if (!std::getline(inFile, name)) break;
+		tempClient.Name = name;
+
+		std::getline(inFile, phoneStr);
+		for (int i = 0; i < 11; ++i) {
+			phone[i] = phoneStr[i] - '0'; // 转换为整数
+		}
+		tempClient.Kind = kind;
+
+		inFile >> kind;
+		inFile.ignore(); // 忽略换行符
+
+
+	}
 }

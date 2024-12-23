@@ -2,6 +2,9 @@
 #define CLASS_H
 
 #include <iostream>
+#include <fstream>
+#include <string>
+
 using namespace std;
 
 extern int OpeningHour;
@@ -28,6 +31,9 @@ public:
 	void getId(string& i);
 	void getArrtime(int& a);
 	void getReqtime(int& r);
+
+	friend class queue;
+	friend class node;
 };
 
 class windows :public client {
@@ -63,6 +69,8 @@ public:
 	bool empty();
 	void enqueue(const client& c);
 	void dequeue(client& c);
+	void writeToFile(const string& filename);
+	void readFromFile(const string& filename);
 };
 
 #endif
