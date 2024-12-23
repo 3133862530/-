@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <limits>
+//test
 
 void getValidNumber(int& number) {
 	while (true) {
