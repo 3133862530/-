@@ -4,7 +4,6 @@
 #include <sstream>
 #include <fstream>
 #include <limits>
-//test
 
 void getValidNumber(int& number) {
 	while (true) {
@@ -128,8 +127,18 @@ int main() {
 	int cNum, sNum;
 	cout << "请输入一般业务窗口数量：" << endl;
 	getValidNumber(cNum);
+	vector <windows> cWin;
+	for (int i = 1; i < cNum + 1; i++) {
+		windows newwin(i, 0);
+		cWin.push_back(newwin);
+	}
 	cout << "请输入特殊业务窗口数量：" << endl;
 	getValidNumber(sNum);
+	vector <windows> sWin;
+	for (int i = 1; i < sNum + 1; i++) {
+		windows newwin(i, 1);
+		sWin.push_back(newwin);
+	}
 	char choice;
 	do {
 		PrintMenu();
