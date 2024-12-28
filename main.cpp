@@ -1,162 +1,132 @@
 #include "class.h"
 #include "rand.h"
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <limits>
+#include "fileinput.h"
+#include "maninput.h"
 
-void getValidNumber(int& number) {
-	while (true) {
-		cin >> number;
-		// 检查输入流状态，判断输入是否有效
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "输入无效，请输入一个数字：" << endl;
-		}
-		else break;
-	}
-}
-
-// 文件输入
-void fileinput(queue& cq, queue& sq) {
-
-}
-
-// 人工输入
-void maninput(queue& cq, queue& sq) {
-	// 客户人数
-	cout << "请输入客户人数：" << endl;
-	int num;
-	getValidNumber(num);
-	for (int i = 1; i <= num; i++) {
-		string name, id, time;
-		int arrtime, reqtime, phone[11], hours, minutes;
-		bool kind;
-		cout << "请输入第" << i << "个客户的信息：" << endl;
-		cout << "请输入姓名：" << endl;
-		cin >> name;
-		cout << "请输入电话号码（11位）：" << endl;
-		do {
-			string input;
-			cin >> input; // 读取整行输入
-
-			if (input.length() != 11 || input[0] != '1') {
-				cout << "电话号码输入不合法，请重新输入：" << endl;
-				continue;
-			}
-
-			bool flag = true;
-			for (int j = 0; j < 11; ++j) {
-				if (input[j] < '0' || input[j] > '9') {
-					cout << "电话号码输入不合法，请重新输入：" << endl;
-					flag = false;
-					break;
-				}
-				phone[j] = input[j] - '0'; // 将字符转换为对应的数字并存储
-			}
-
-			if (flag) {
-				break; // 如果输入合法，则退出循环
-			}
-		} while (true);
-		cout << "请输入身份证号（18位）：" << endl;
-		bool flag;
-		do {
-			flag = true;
-			cin >> id; // 读取整行输入
-			if (id[0] < '1' || id[0] > '9') {
-				flag = false; // 第一个字符必须是数字1-9
-			}
-
-			for (int j = 1; j < 17; ++j) {
-				if (id[j] < '0' || id[j] > '9') {
-					flag = false; // 第2到第17位必须是数字
-					break;
-				}
-			}
-
-			if (flag) {
-				if ((id[17] < '0' || id[17] > '9') && id[17] != 'X') {
-					flag = false; // 第18位必须是数字或X
-				}
-			}
-
-			if (!flag) {
-				cout << "身份证号输入不合法，请重新输入：" << endl;
-			}
-		} while (!flag); // 如果输入合法，则退出循环
-		cout << "请输入业务类型：" << endl;
-		cout << "0.普通业务" << endl;
-		cout << "1.特殊业务" << endl;
-		cin >> kind;
-		cout << "请输入到达时间（格式：HH:MM）：" << endl;
-		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		getline(cin, time);
-		// 使用 stringstream 进行字符串解析
-		stringstream ss(time);
-		char colon;  // 用来读取冒号
-		// 提取小时和分钟
-		ss >> hours >> colon >> minutes;
-		arrtime = (hours - OpeningHour) * 60 + (minutes - OpeningMintue);
-		cout << "请输入所需时长：" << endl;
-		getValidNumber(reqtime);
-		client newc(name, phone, kind, id, arrtime, reqtime);
-		node newnode(newc);
-		if (kind)sq.enqueue(newnode);
-		else cq.enqueue(newnode);
-	}
-}
-
-void Time() {
+void Time(queue& cq, queue& sq, winList& cw, winList& sw, int& cn, int& sn, double& ct, double& st) {
 	int time = 0;
-
+	while (time < MAXTIME) {
+		for (int i = 0; i < sw.size() && !sq.empty(); i++) {
+			if (sw[i].AvailTime <= time&&sq.front().getArrtime() <= time) {
+				client c;
+				sq.dequeue(c);
+				sw[i].conduct(c, time, sn, st);
+			}
+		}
+		for (int i = 0; i < cw.size() && !cq.empty(); i++) {
+			if (cw[i].AvailTime <= time && cq.front().getArrtime() <= time) {
+				client c;
+				cq.dequeue(c);
+				cw[i].conduct(c, time, cn, ct);
+			}
+		}
+		for (int i = 0; i < sw.size() && !cq.empty(); i++) {
+			if (sw[i].AvailTime <= time && cq.front().getArrtime() <= time) {
+				client c;
+				cq.dequeue(c);
+				sw[i].conduct(c, time, cn, st);
+			}
+		}
+		time++;
+	}
 }
 
-void PrintMenu() {
-	cout << "请选择输入数据的方式（输入选项）：" << endl;
+void PrintStatistics(int cn, int sn, double ct, double st) {
+	cout << "一般业务客户平均逗留时间为" << fixed << setprecision(2) << ct / cn << "分钟" << endl;
+	cout << "一般业务客户人数为" << cn << endl;
+	cout << "特殊业务客户平均逗留时间为" << fixed << setprecision(2) << st / sn << "分钟" << endl;
+	cout << "特殊业务客户人数为" << sn << endl;
+}
+
+void PrintInputMenu() {
+	cout << "请选择输入数据的方式：" << endl;
 	cout << "1.随机生成" << endl;
 	cout << "2.文件输入" << endl;
 	cout << "3.人工输入" << endl;
-	cout << "4.退出" << endl;
+}
+
+void PrintMenu() {
+	cout << "请选择操作：" << endl;
+	cout << "1.查询数据" << endl;
+	cout << "2.更新数据" << endl;
+	cout << "3.清空数据" << endl;
+	cout << "4.分类统计" << endl;
+	cout << "5.退出" << endl;
 }
 
 int main() {
-	queue Cqueue, Squeue;
+	setTime();
 	int cNum, sNum;
+	int cCusNum = 0, sCusNum = 0;
+	double cTotalTime = 0.0, sTotalTime = 0.0;
+	queue Cqueue, Squeue;
 	cout << "请输入一般业务窗口数量：" << endl;
 	getValidNumber(cNum);
-	vector <windows> cWin;
+	winList cWin;
 	for (int i = 1; i < cNum + 1; i++) {
 		windows newwin(i, 0);
 		cWin.push_back(newwin);
 	}
 	cout << "请输入特殊业务窗口数量：" << endl;
 	getValidNumber(sNum);
-	vector <windows> sWin;
+	winList sWin;
 	for (int i = 1; i < sNum + 1; i++) {
 		windows newwin(i, 1);
 		sWin.push_back(newwin);
 	}
 	char choice;
 	do {
-		PrintMenu();
+		PrintInputMenu();
 		cin >> choice;
 		switch (choice) {
 		case'1': // 随机生成
 			randinput(Cqueue, Squeue);
 			break;
 		case'2': // 文件输入
-			fileinput(Cqueue, Squeue);
+			fileread(InPut, Cqueue, Squeue);
 			break;
 		case'3': // 人工输入
 			maninput(Cqueue, Squeue);
 			break;
-		case'4': // 结束
-			return 0;
-			break;
 		default:cout << "请输入合法的选项" << endl;
 		}
-	} while (choice != '4');
+	} while (choice != '1'&&choice != '2'&&choice != '3');
+	do {
+		PrintMenu();
+		cin >> choice;
+		switch (choice) {
+		case'1': // 查询数据
+			
+			break;
+		case'2': // 更新数据
+
+			break;
+		case'3': // 清空数据
+		{
+			ofstream outFile(InPut, ios::out | ios::trunc);
+			if (!outFile) {
+				cerr << "无法打开文件进行清空！" << endl;
+				return -1;
+			}
+			outFile.close();
+			outFile.open(OutPut, ios::out | ios::trunc);
+			if (!outFile) {
+				cerr << "无法打开文件进行清空！" << endl;
+				return -1;
+			}
+			outFile.close();
+			cout << "已清空数据" << endl;
+			break;
+		}
+		case'4': // 分类统计
+		{
+			Time(Cqueue, Squeue, cWin, sWin, cCusNum, sCusNum, cTotalTime, sTotalTime);
+			PrintStatistics(cCusNum, sCusNum, cTotalTime, sTotalTime);
+			break;
+		}
+		case '5':break;
+		default:cout << "请输入合法的选项" << endl;
+		}
+	} while (choice != '5');
 	return 0;
 }

@@ -11,26 +11,6 @@ int randnum(int lower, int upper) {
     return dist(rng);
 }
 
-// 随机姓名
-string randname() {
-    // 打开文件
-    ifstream file("names.txt");
-    if (!file.is_open()) {
-        cerr << "无法打开文件" << endl;
-    }
-    // 读取文件中的所有名字
-    vector<string> names;
-    string name;
-    while (getline(file, name)) {
-        names.push_back(name);
-    }
-    file.close();
-    // 随机选择一个名字
-    int index = randnum(0, names.size() - 1);
-    string randName = names[index];
-    return randName;
-}
-
 // 随机电话号码
 void randphone(int* phone) {
     // 第一位为1
@@ -62,14 +42,27 @@ string randid() {
 // 随机生成
 void randinput(queue& cq, queue& sq) {
     int pretime = 0; // 上一位客户到达的时间
+    // 打开文件
+    ifstream file("names.txt");
+    if (!file.is_open()) {
+        cerr << "无法打开文件" << endl;
+    }
+    // 读取文件中的所有名字
+    nameList names;
+    string name;
+    while (getline(file, name)) {
+        names.push_back(name);
+    }
+    file.close();
     for (int i = 0; pretime < MAXTIME; i++) {
-        string name = randname();
+        int index = randnum(0, names.size() - 1);
+        string randName = names[index];
         int phone[11];
         randphone(phone);
         bool kind = randnum(0, 1);
         string id = randid();
-        // 假设30分钟之内必定会有下一位客户
-        int arrtime = randnum(0, 30);
+        // 假设10分钟之内必定会有下一位客户
+        int arrtime = randnum(0, 10);
         arrtime += pretime;
         pretime = arrtime;
         int reqtime;
@@ -79,9 +72,10 @@ void randinput(queue& cq, queue& sq) {
         else {
             reqtime = randnum(1, 5);
         }
-        client newc(name, phone, kind, id, arrtime, reqtime);
-        node newnode(newc);
-        if (kind)sq.enqueue(newnode);
-        else cq.enqueue(newnode);
+        client newc(randName, phone, kind, id, arrtime, reqtime);
+        if (kind)sq.enqueue(newc);
+        else cq.enqueue(newc);
     }
+    filewrite(InPut, cq, false);
+    filewrite(InPut, sq, false);
 }

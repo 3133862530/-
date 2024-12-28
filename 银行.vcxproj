@@ -128,13 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="class.cpp" />
+    <ClCompile Include="fileinput.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="maninput.cpp" />
     <ClCompile Include="rand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="class.h" />
+    <ClInclude Include="fileinput.h" />
+    <ClInclude Include="maninput.h" />
     <ClInclude Include="rand.h" />
-    <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="names.txt" />
