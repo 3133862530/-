@@ -7,6 +7,7 @@ using namespace std;
 extern int OpeningHour;
 extern int OpeningMintue;
 extern int MAXTIME;
+extern int CustomerNum;
 
 class client {
 private:

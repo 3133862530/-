@@ -109,9 +109,8 @@ void maninput(queue& cq, queue& sq) {
 }
 
 void Time() {
-	for (int time = 0; time < MAXTIME; time++) {
+	int time = 0;
 
-	}
 }
 
 void PrintMenu() {

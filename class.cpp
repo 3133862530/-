@@ -4,6 +4,8 @@
 int OpeningHour = 8;
 int OpeningMintue = 0;
 int MAXTIME = 480;
+int CustomerNum = 0;
+int CustomerTime = 0;
 
 client::client(string name, int* phone, bool kind, string id, int arrtime, int reqtime)
 	: Name(name), Kind(kind), Id(id), Arrtime(arrtime), Reqtime(reqtime) {
@@ -65,6 +67,7 @@ windows::windows(int number, bool kind) :Number(number), Kind(kind) {}
 void windows::conduct(const client& c) {
 	Customer = c;
 	Available = 1;
+
 }
 
 node::node(const client& c, node* next) :Next(next) {
