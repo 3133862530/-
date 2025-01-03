@@ -24,6 +24,15 @@
     <ClCompile Include="rand.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="maninput.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="fileinput.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="search.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="class.h">
@@ -32,7 +41,13 @@
     <ClInclude Include="rand.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="vector.h">
+    <ClInclude Include="maninput.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fileinput.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="search.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
