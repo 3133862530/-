@@ -2,14 +2,14 @@
 #define RAND_H
 
 #include "class.h"
-#include "vector"
+#include "fileinput.h"
 #include <string>
 #include <random>
-#include <fstream>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
 
+int randnum(int lower, int upper);
 string randname();
 void randphone(int* phone);
 string randid();
